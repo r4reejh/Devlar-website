@@ -7,6 +7,7 @@ var slideDurationSetting = 600;
 var currentSlideNumber = 0;
 var totalSlideNumber = $(".background").length;
 var dots = $(".dot").length;
+$('.brand-text').hide();
 
 //DETERMINE DELTA/SCROLL DIRECTION 
 function parallaxScroll(evt) {
@@ -37,12 +38,18 @@ function parallaxScroll(evt) {
       ticking = true;
       if (currentSlideNumber !== 0) {
         currentSlideNumber--;
+        previousItem();
       }
-      previousItem();
+      
       slideDurationTimeout(slideDurationSetting);
     }
   }
+  if (currentSlideNumber == 0) {
+    $('.brand-text').hide();
+  }
+  else $('.brand-text').show();
 }
+
 
 
 function slideDurationTimeout(slideDuration) {
@@ -97,5 +104,81 @@ function reset(){
       $(".dot").eq(0).addClass("current");
       currentSlideNumber = 0; 
     }
+    if (currentSlideNumber == 0) {
+      $('.brand-text').hide();
+    }
+    else $('.brand-text').show();
 
 }
+
+$('.dot').on('click', function(e){
+    e.preventDefault();
+    myFunction($('.dot').index(this));
+});
+
+
+function myFunction(id) {
+  if(id>currentSlideNumber)
+  {
+    n = id-currentSlideNumber;
+    for(var i=0;i<n;i++){
+      currentSlideNumber++;
+        nextItem();
+      }
+    }
+    else{
+      n = currentSlideNumber - id + 1;
+      for(i=1;i<n;i++){
+        currentSlideNumber--;
+        previousItem();
+      }
+   } 
+   if (currentSlideNumber == 0) {
+    $('.brand-text').hide();
+    }
+    else $('.brand-text').show();
+}
+
+document.onkeydown = checkKey;
+
+function checkKey(e) {
+
+    e = e || window.event;
+
+    if (e.keyCode == '38' && currentSlideNumber!=0) {
+        currentSlideNumber--;
+        previousItem();
+    }
+    else if (e.keyCode == '40' && currentSlideNumber!=6) {
+        currentSlideNumber++;
+        nextItem();
+    }
+    if (currentSlideNumber == 0) {
+      $('.brand-text').hide();
+    }
+    else $('.brand-text').show();
+
+}
+
+ $(function() {      
+      //Enable swiping...
+      $("section").swipe( {
+        //Generic swipe handler for all directions
+        swipe:function(event, direction, distance, duration, fingerCount, fingerData) {
+         if(direction == "up" && currentSlideNumber!=6) {
+          currentSlideNumber++;
+          nextItem();
+         }
+         else if(direction == "down" && currentSlideNumber!=0){
+          currentSlideNumber--;
+          previousItem();
+         }
+         if (currentSlideNumber == 0) {
+          $('.brand-text').hide();
+        }
+        else $('.brand-text').show();
+        },
+        //Default is 75px, set to 0 for demo so any distance triggers swipe
+         threshold:10
+      });
+    });
